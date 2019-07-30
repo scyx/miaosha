@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>注册</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}" />
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer -->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js -->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+</head>
+<body>
+    <form name="loginForm" id="loginForm" method="post"  style="position:absolute;width:50%; margin:0 auto;top: 25%;left: 30%">
+
+        <h2 style="text-align:center; margin-bottom: 20px;position:relative;left: -8%;">用户注册</h2>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="form-label col-md-4">请输入手机号码</label>
+                <div class="col-md-5">
+                    <input id="mobile" name = "mobile" class="form-control" type="text" placeholder="手机号码" required="true"  minlength="11" maxlength="11" />
+                </div>
+                <div class="col-md-1">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="form-label col-md-4">请输入密码</label>
+                <div class="col-md-5">
+                    <input id="password" name="password" class="form-control" type="password"  placeholder="密码" required="true" minlength="6" maxlength="16" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <button class="btn btn-primary btn-block" type="reset" onclick="reset()">重置</button>
+            </div>
+            <div class="col-md-5">
+                <button class="btn btn-primary btn-block" type="submit" onclick="registe()">注册</button>
+            </div>
+        </div>
+
+    </form>
+    <div class="col-md-5" style="position: absolute; left: 50.7%;width: 332.5px;top: 55%">
+        <a href="/login/to_login"><button class="btn btn-primary btn-block" type="button">有账号了？去登录</button></a>
+    </div>
+
+</body>
+<script>
+    function registe(){
+        $("#loginForm").validate({
+            submitHandler:function(form){
+                doregiste();
+            }
+        });
+    }
+    function doregiste(){
+        g_showLoading();
+        var password=$("#password").val();
+        var salt=g_passsword_salt;
+        var str=""+salt.charAt(0)+salt.charAt(2)+password+salt.charAt(5)+salt.charAt(4);
+        var Ppassword=md5(str);
+        var mobile=$("#mobile").val();
+        if(mobile==null||mobile==""||mobile.length==0){
+            layer.msg("用户名不能为空",{
+                time:3000
+            });
+            return;
+        }else if(mobile.length!=11){
+            layer.msg("用户名长度必须为11位",{
+                time:2000
+            });
+            return;
+        }else if(password.length<6){
+            layer.msg("密码长度不能小于6位")
+            return;
+        }
+        $.ajax({
+            url:"/registe/doregiste",
+            type:"POST",
+            data:{
+                mobile:mobile,
+                password :Ppassword
+            },
+            success:function (data){
+                if(data.code==0){
+                    layer.msg("注册成功！正在跳转到登录页面");
+                    setTimeout("window.location.href=\"/login/to_login\"",800);;
+                }else{
+                        layer.msg(data.msg,{
+                            time:4000,end:function () {
+                                window.location.reload();
+                            }
+                        });
+                    }
+             },
+            // error:function () {
+            //     layer.closeAll();
+            // }
+        });
+    }
+</script>
+</html>

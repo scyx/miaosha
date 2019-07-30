@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生表单</title>
+</head>
+<body>
+        <h2>学生信息</h2>
+        <form action="/student/add"
+              th:action="@{/student/add}" method="post">
+            <label>Id</label><input type="text" name="id"><br>
+            <label>No</label><input type="text" name="no"><br>
+            <label>Firstname</label><input type="text" name="firstname"><br>
+            <label>Lastname</label><input type="text" name="lastname"><br>
+            <label>Gender</label>
+            <label> <input type="radio" name="gender" value="Male">Male
+                    <input type="radio" name="gender" value="Female">Female<br>
+            </label>
+            <label>Birthday</label><input type="text" name="birthday"><br>
+            <button type="submit">添加</button>
+        </form>
+</body>
+</html>

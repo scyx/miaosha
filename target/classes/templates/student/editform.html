@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生表单</title>
+</head>
+<body>
+<h2>学生信息</h2>
+<form action="/student/edit"
+      th:action="@{/student/edit}" method="post">
+    <label>Id</label><input type="text" name="id" th:value="${s.id}"><br>
+    <label>No</label><input type="text" name="no" th:value="${s.no}"><br>
+    <label>Firstname</label><input type="text" name="firstname" th:value="${s.firstname}"><br>
+    <label>Lastname</label><input type="text" name="lastname" th:value="${s.lastname}"><br>
+    <label>Gender</label>
+    <label> <input type="radio" name="gender" value="male" th:if="${s.gender.equals('male')}" th:checked="true" >Male
+        <input type="radio" name="gender" value="female" >Female<br>
+    </label>
+    <label>Birthday</label><input type="text" name="birthday" th:value="${#dates.format(s.birthday,'yyyy-MM-dd HH:mm:ss ')}"><br>
+    <button type="submit">修改</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+</head>
+
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+<!-- bootstrap -->
+<!-- jquery-validator -->
+<script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+<!-- layer -->
+<!-- md5.js -->
+<!-- common.js -->
+
+<body>
+<h1>学生列表</h1>
+<span></span>
+<table border="1" width="100%" >
+
+    <tr ><td>Id:</td> <td th:text="${student.id}">id</td></tr>
+    <tr><td>No:</td> <td th:text="${student.no}">no</td></tr>
+    <tr><td>firstname:</td> <td th:text="${student.firstname}"></td></tr>
+    <tr><td>Lastname:</td> <td th:text="${student.lastname}">lastname</td></tr>
+    <tr><td>sex:</td> <td th:text="${student.gender}">gender</td></tr>
+    <tr><td>birthday:</td> <td th:text="${#dates.format(student.birthday,'yyyy-MM-dd HH:mm:ss ')}">birthday</td></tr>
+
+</table>
+<h2 align="left">所有学生</h2>
+<a href="/student/form">添加学生</a>
+<table border="1" width="100%">
+    <tr align="center">
+        <th>id</th>
+        <th>no</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>sex</th>
+        <th>Birthday</th>
+        <th>操作</th>
+    </tr>
+    <tr align="center" th:each="s:${students}">
+        <td th:text="${s.id}">id</td>
+        <td th:text="${s.no}">no</td>
+        <td th:text="${s.firstname}">firstname</td>
+        <td th:text="${s.lastname}">lastname</td>
+        <td th:text="${s.gender}">sex</td>
+        <td th:text="${#dates.format(student.birthday,'yyyy-MM-dd HH:mm:ss ')}">birthday</td>
+        <td><button th:onclick="'delStu('+${s.id}+')'">删除</button><a th:href="'/student/editform/'+${s.id}"><button>修改</button></a></td>
+    </tr>
+</table>
+<script>
+    function delStu(id) {
+        var status =(confirm('确定删除吗'));
+        if(!status)
+        {
+            return false;
+        }
+        else
+        {
+            $.ajax({
+            url:"/student/del",
+            TYPE:"POST",
+            data: {
+                "id":id,
+            },
+            success :function () {
+                alert("删除成功");
+                  window.location.reload();
+               }
+            })
+        }
+    }
+
+
+
+
+
+
+</script>
+</body>
+</html>

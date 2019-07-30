@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body onload="loadCourses()">
+<h1 align="center">课程列表</h1>
+<form id="form">
+    <label for="code">课程号</label><input name="code" type="text" placeholder="请输入课程号"  style="width:668px;">
+    <label for="name">课程名</label><input name="name" type="text" placeholder="请输入课程名" style="width:668px;">
+    <button onclick="addCourse(); return false;">添加课程</button>
+</form>
+<form id="editform">
+    <label for="code">课程号</label><input name="code" type="text" placeholder="请输入课程号"  style="width:668px;">
+    <label for="name">课程名</label><input name="name" type="text" placeholder="请输入课程名" style="width:668px;">
+    <button onclick="editCourse();return false;">修改课程</button>
+</form>
+<table id="courses-table" border="1" width="100%"></table>
+<script type="text/javascript">
+    const coursesTable = document.getElementById('courses-table');
+    function addCourse() {
+        let code=document.querySelector('#form input[name="code"]').value;
+        let name=document.querySelector('#form input[name="name"]').value;
+        let url='/addcourse?code='+code+'&name='+name;
+        axios.post(url).then(res=>{
+           window.location.reload();
+        }).catch(err=>{
+            alert(err);
+        });
+    }
+    function editCourse() {
+        let code=document.querySelector('#editform input[name="code"]').value;
+        let name=document.querySelector('#editform input[name="name"]').value;
+        let url='/editcourse?code='+code+'&name='+name;
+        axios.post(url).then(res=>{
+            window.location.reload();
+    }).catch(err=>{
+            alert(err);
+    });
+    }
+    function loadCourses(){
+        axios.get('/course').then(res=>{
+            renderCourses(res.data);
+    }).catch(err=>{
+            alert(err);
+    });
+    }
+
+    function renderCourses(data){
+        let coursesHTML = '<tr><th>id</th><th>编号</th><th>名字</th><th>操作</th></tr>';
+        for(let i in data) {
+            let c = data[i];
+            let seq = parseInt(i)+1;
+            coursesHTML += `<tr align="center"><td >${seq}</td><td >${c.code}</td><td >${c.name}</td><td ><button onclick="delCourse('${c.code}')">删除</button></td></tr>`;
+            }
+    coursesTable.innerHTML = coursesHTML;
+        }
+
+        function delCourse(code) {
+        axios.delete('/course/'+code).then(res=>{
+            if(confirm('确定要删除吗')){
+                alert("删除成功");
+            }
+            window.location.reload();
+        }).catch(err=>{
+            alert(err);
+            });
+        }
+</script>
+
+</body>
+</html>
